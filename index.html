@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Concepts | AI Phone Agents for Every Business</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #07070f;
+      --deep: #0e0e1c;
+      --lava: #d63031;
+      --lava-glow: rgba(214,48,49,0.15);
+      --teal: #00cec9;
+      --teal-glow: rgba(0,206,201,0.12);
+      --ocean: #0984e3;
+      --white: #f0f0f8;
+      --gray: #7f8c9a;
+      --border: rgba(255,255,255,0.07);
+      --card: rgba(255,255,255,0.03);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'IBM Plex Mono', monospace; background: var(--black); color: var(--white); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 18px 48px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(7,7,15,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+    .nav-logo span { color: var(--teal); }
+    .logo-dot { width: 8px; height: 8px; background: var(--lava); border-radius: 50%; animation: blink 2s infinite; flex-shrink: 0; }
+    @keyframes blink { 0%,100% { opacity:1; box-shadow: 0 0 8px var(--lava); } 50% { opacity:0.3; box-shadow:none; } }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--gray); text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { background: var(--lava) !important; color: var(--white) !important; padding: 10px 20px !important; border-radius: 4px !important; transition: background 0.2s !important; }
+    .nav-cta:hover { background: #ff3d3d !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 120px 24px 80px; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,206,201,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,206,201,0.025) 1px, transparent 1px);
+      background-size: 60px 60px; animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove { 0% { transform: translateY(0); } 100% { transform: translateY(60px); } }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+    .orb-1 { width: 600px; height: 600px; background: var(--lava-glow); top: -150px; left: -150px; animation: float1 12s ease-in-out infinite; }
+    .orb-2 { width: 500px; height: 500px; background: var(--teal-glow); bottom: -100px; right: -100px; animation: float2 15s ease-in-out infinite; }
+    @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+    @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px,-60px); } }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 100px;
+      padding: 8px 18px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 36px; animation: fadeUp 0.8s ease both; position: relative; z-index: 1;
+    }
+    .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: blink 1.5s infinite; flex-shrink: 0; }
+
+    .hero-h1 {
+      font-family: 'Syne', sans-serif; font-size: clamp(40px, 8vw, 100px);
+      font-weight: 800; line-height: 0.93; letter-spacing: -3px;
+      margin-bottom: 32px; animation: fadeUp 0.8s 0.1s ease both; position: relative; z-index: 1;
+    }
+    .line-teal { color: var(--teal); }
+    .line-lava { color: var(--lava); }
+
+    .hero-sub {
+      font-size: 15px; color: var(--gray); max-width: 560px; line-height: 1.85;
+      margin: 0 auto 52px; animation: fadeUp 0.8s 0.2s ease both; position: relative; z-index: 1;
+    }
+    .hero-sub strong { color: var(--white); }
+
+    /* TICKER */
+    .ticker-wrap {
+      width: 100%; overflow: hidden; margin-bottom: 52px;
+      animation: fadeUp 0.8s 0.25s ease both; position: relative; z-index: 1;
+      mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+    }
+    .ticker {
+      display: flex; gap: 0; white-space: nowrap;
+      animation: ticker 25s linear infinite;
+    }
+    .ticker-inner { display: flex; gap: 0; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 28px; font-size: 12px; letter-spacing: 0.05em;
+      color: var(--gray); border-right: 1px solid var(--border); white-space: nowrap;
+    }
+    .ticker-item span { color: var(--teal); font-size: 16px; }
+
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.3s ease both; position: relative; z-index: 1; }
+
+    .btn-primary {
+      background: var(--lava); color: var(--white); padding: 16px 36px; border-radius: 6px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; text-decoration: none;
+      transition: all 0.2s; border: none; cursor: pointer; box-shadow: 0 0 40px rgba(214,48,49,0.3); letter-spacing: 0.03em;
+    }
+    .btn-primary:hover { background: #ff3d3d; transform: translateY(-2px); box-shadow: 0 8px 48px rgba(214,48,49,0.5); }
+    .btn-ghost {
+      background: transparent; color: var(--white); padding: 16px 36px; border-radius: 6px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; text-decoration: none;
+      transition: all 0.2s; border: 1px solid var(--border); cursor: pointer; letter-spacing: 0.03em;
+    }
+    .btn-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+    .wave-wrap { margin-top: 64px; text-align: center; animation: fadeUp 0.8s 0.4s ease both; position: relative; z-index: 1; }
+    .wave-container { display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .wave-bar { width: 3px; background: var(--teal); border-radius: 10px; animation: wave 1.2s ease-in-out infinite; }
+    .wave-bar:nth-child(1)  { height: 8px;  animation-delay: 0s; }
+    .wave-bar:nth-child(2)  { height: 20px; animation-delay: 0.1s; }
+    .wave-bar:nth-child(3)  { height: 36px; animation-delay: 0.2s; }
+    .wave-bar:nth-child(4)  { height: 52px; animation-delay: 0.3s; }
+    .wave-bar:nth-child(5)  { height: 64px; animation-delay: 0.4s; }
+    .wave-bar:nth-child(6)  { height: 52px; animation-delay: 0.5s; }
+    .wave-bar:nth-child(7)  { height: 36px; animation-delay: 0.4s; }
+    .wave-bar:nth-child(8)  { height: 52px; animation-delay: 0.3s; }
+    .wave-bar:nth-child(9)  { height: 64px; animation-delay: 0.2s; }
+    .wave-bar:nth-child(10) { height: 52px; animation-delay: 0.1s; }
+    .wave-bar:nth-child(11) { height: 36px; animation-delay: 0s; }
+    .wave-bar:nth-child(12) { height: 20px; animation-delay: 0.1s; }
+    .wave-bar:nth-child(13) { height: 8px;  animation-delay: 0.2s; }
+    @keyframes wave { 0%,100% { transform: scaleY(0.4); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+    .wave-label { font-size: 11px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 12px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* STATS */
+    .stats {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;
+    }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 44px; font-weight: 800; color: var(--teal); line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.5; }
+
+    /* SECTIONS */
+    section { padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+    .full-section { padding: 100px 48px; }
+    .full-inner { max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--teal); }
+    .section-h2 { font-family: 'Syne', sans-serif; font-size: clamp(30px, 5vw, 54px); font-weight: 800; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 20px; }
+    .section-sub { font-size: 14px; color: var(--gray); line-height: 1.85; max-width: 580px; margin-bottom: 60px; }
+
+    /* PROBLEM */
+    .problem-bg { background: var(--deep); }
+    .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .problem-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 32px; position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s;
+    }
+    .problem-card:hover { border-color: rgba(214,48,49,0.4); transform: translateY(-4px); }
+    .problem-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--lava), transparent); }
+    .problem-icon { font-size: 32px; margin-bottom: 16px; }
+    .problem-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .problem-desc { font-size: 13px; color: var(--gray); line-height: 1.75; }
+
+    /* INDUSTRIES */
+    .industries-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px;
+    }
+    .industry-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px 24px; display: flex; align-items: center; gap: 16px;
+      transition: all 0.3s; cursor: default;
+    }
+    .industry-card:hover { border-color: rgba(0,206,201,0.35); background: rgba(0,206,201,0.04); transform: translateY(-3px); }
+    .industry-emoji { font-size: 28px; flex-shrink: 0; }
+    .industry-info {}
+    .industry-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .industry-desc { font-size: 11px; color: var(--gray); line-height: 1.5; }
+
+    /* HOW IT WORKS */
+    .how-bg { background: var(--deep); }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 60px; position: relative; }
+    .steps::before {
+      content: ''; position: absolute; top: 32px;
+      left: calc(16.66% + 24px); right: calc(16.66% + 24px);
+      height: 1px; background: linear-gradient(90deg, var(--teal), var(--ocean), var(--teal)); opacity: 0.3;
+    }
+    .step { text-align: center; padding: 0 32px; }
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%; background: var(--black);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--teal);
+      margin: 0 auto 24px; position: relative; z-index: 1;
+    }
+    .step-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .step-desc { font-size: 12px; color: var(--gray); line-height: 1.85; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 60px; }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 36px; transition: all 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(0,206,201,0.3); transform: translateY(-4px); }
+    .feature-icon { font-size: 36px; margin-bottom: 16px; }
+    .feature-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+    .feature-desc { font-size: 13px; color: var(--gray); line-height: 1.8; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .pricing-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 40px 32px; text-align: center; transition: all 0.3s; position: relative;
+    }
+    .pricing-card.featured { border-color: var(--teal); background: rgba(0,206,201,0.05); }
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--teal); color: var(--black); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; padding: 4px 14px; border-radius: 100px; font-family: 'Syne', sans-serif; white-space: nowrap;
+    }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .pricing-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); margin-bottom: 16px; }
+    .pricing-price { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; color: var(--white); line-height: 1; margin-bottom: 4px; }
+    .pricing-price sup { font-size: 24px; vertical-align: super; }
+    .pricing-period { font-size: 12px; color: var(--gray); margin-bottom: 32px; }
+    .pricing-features { list-style: none; text-align: left; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .pricing-features li { font-size: 12px; color: var(--gray); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+    .pricing-features li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .pricing-btn { width: 100%; padding: 14px; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.03em; }
+    .pricing-card.featured .pricing-btn { background: var(--teal); color: var(--black); }
+    .pricing-card.featured .pricing-btn:hover { background: #00f5f0; transform: translateY(-1px); }
+    .pricing-card:not(.featured) .pricing-btn { background: transparent; color: var(--white); border: 1px solid var(--border); }
+    .pricing-card:not(.featured) .pricing-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* CONTACT */
+    .contact-bg { background: var(--deep); }
+    .contact-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+    .contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; text-align: left; }
+    .form-full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 6px; padding: 14px 16px; color: var(--white);
+      font-family: 'IBM Plex Mono', monospace; font-size: 13px; outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--teal); }
+    .form-group select option { background: var(--deep); color: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-submit {
+      grid-column: 1 / -1; background: var(--lava); color: var(--white); border: none;
+      padding: 18px; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 40px rgba(214,48,49,0.25); letter-spacing: 0.03em;
+    }
+    .form-submit:hover { background: #ff3d3d; transform: translateY(-2px); box-shadow: 0 8px 40px rgba(214,48,49,0.4); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--gray); flex-wrap: wrap; gap: 12px; }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--white); display: flex; align-items: center; gap: 8px; }
+    .footer-logo span { color: var(--teal); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      .hero-h1 { letter-spacing: -1px; }
+      .stats { grid-template-columns: repeat(2, 1fr); padding: 40px 20px; }
+      section { padding: 60px 20px; }
+      .full-section { padding: 60px 20px; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .industries-grid { grid-template-columns: 1fr 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+      .steps::before { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .contact-form { grid-template-columns: 1fr; }
+      .form-full { grid-column: 1; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .industries-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+</head>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-dot"></div>
+    AI <span>Concepts</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#industries">Industries</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact" class="nav-cta">Book a Demo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="hero-badge">🌺 Kailua-Kona, Hawaii — Serving All Local Businesses</div>
+
+  <h1 class="hero-h1">
+    If Your Business<br/>
+    <span class="line-teal">Gets Phone Calls,</span><br/>
+    <span class="line-lava">We Can Help.</span>
+  </h1>
+
+  <p class="hero-sub">
+    AI Concepts builds <strong>custom AI phone agents</strong> for local Hawaii businesses. Your agent answers every call 24/7, books appointments, captures leads, and handles customer questions — automatically.
+  </p>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker-inner">
+        <div class="ticker-item"><span>🍽️</span> Restaurants</div>
+        <div class="ticker-item"><span>💇</span> Salons & Spas</div>
+        <div class="ticker-item"><span>🏡</span> Real Estate</div>
+        <div class="ticker-item"><span>🌊</span> Tour Companies</div>
+        <div class="ticker-item"><span>🌿</span> Landscaping</div>
+        <div class="ticker-item"><span>🔨</span> Construction</div>
+        <div class="ticker-item"><span>☀️</span> Solar</div>
+        <div class="ticker-item"><span>🏖️</span> Vacation Rentals</div>
+        <div class="ticker-item"><span>🚗</span> Auto Services</div>
+        <div class="ticker-item"><span>🏥</span> Medical Offices</div>
+        <div class="ticker-item"><span>🐾</span> Pet Services</div>
+        <div class="ticker-item"><span>💼</span> Law Firms</div>
+        <div class="ticker-item"><span>🏋️</span> Gyms & Fitness</div>
+        <div class="ticker-item"><span>🎓</span> Tutoring</div>
+      </div>
+      <div class="ticker-inner" aria-hidden="true">
+        <div class="ticker-item"><span>🍽️</span> Restaurants</div>
+        <div class="ticker-item"><span>💇</span> Salons & Spas</div>
+        <div class="ticker-item"><span>🏡</span> Real Estate</div>
+        <div class="ticker-item"><span>🌊</span> Tour Companies</div>
+        <div class="ticker-item"><span>🌿</span> Landscaping</div>
+        <div class="ticker-item"><span>🔨</span> Construction</div>
+        <div class="ticker-item"><span>☀️</span> Solar</div>
+        <div class="ticker-item"><span>🏖️</span> Vacation Rentals</div>
+        <div class="ticker-item"><span>🚗</span> Auto Services</div>
+        <div class="ticker-item"><span>🏥</span> Medical Offices</div>
+        <div class="ticker-item"><span>🐾</span> Pet Services</div>
+        <div class="ticker-item"><span>💼</span> Law Firms</div>
+        <div class="ticker-item"><span>🏋️</span> Gyms & Fitness</div>
+        <div class="ticker-item"><span>🎓</span> Tutoring</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Book a Free Demo</a>
+    <a href="#how" class="btn-ghost">See How It Works</a>
+  </div>
+
+  <div class="wave-wrap">
+    <div class="wave-container">
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+    <div class="wave-label">Your AI agent — always listening, always answering</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="reveal"><div class="stat-num">62%</div><div class="stat-label">of callers won't leave a voicemail</div></div>
+  <div class="reveal"><div class="stat-num">24/7</div><div class="stat-label">Your agent never sleeps or calls in sick</div></div>
+  <div class="reveal"><div class="stat-num">&lt;2s</div><div class="stat-label">Average call answer time</div></div>
+  <div class="reveal"><div class="stat-num">48h</div><div class="stat-label">From signup to fully live</div></div>
+</div>
+
+<!-- PROBLEM -->
+<div class="full-section problem-bg">
+  <div class="full-inner">
+    <div class="section-tag reveal">The Problem</div>
+    <h2 class="section-h2 reveal">Every missed call is<br/><span style="color:var(--lava)">money walking out the door.</span></h2>
+    <p class="section-sub reveal">Whether you're a contractor, a salon owner, or a tour guide — your phone is your lifeline. When it goes unanswered, your competitor gets the job.</p>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="problem-icon">📵</div>
+        <div class="problem-title">Calls go unanswered</div>
+        <div class="problem-desc">During busy hours, on weekends, after 5pm — your phone rings and nobody picks up. That customer calls someone else.</div>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-icon">💸</div>
+        <div class="problem-title">Revenue slips away</div>
+        <div class="problem-desc">Missing just 3-5 calls a day can cost your business tens of thousands in lost revenue every year. It adds up fast.</div>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-icon">😤</div>
+        <div class="problem-title">You can't do it all</div>
+        <div class="problem-desc">You're running a business. You can't be on the job AND answering every call at the same time. Now you don't have to be.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INDUSTRIES -->
+<section id="industries">
+  <div class="section-tag reveal">Who We Serve</div>
+  <h2 class="section-h2 reveal">Built for any business<br/>that answers a phone.</h2>
+  <p class="section-sub reveal">We customize every AI agent specifically for your industry and your business. If customers call you, we can automate it.</p>
+
+  <div class="industries-grid">
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🍽️</div>
+      <div class="industry-info"><div class="industry-name">Restaurants & Cafes</div><div class="industry-desc">Menu questions, reservations, hours & location</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">💇</div>
+      <div class="industry-info"><div class="industry-name">Salons & Spas</div><div class="industry-desc">Appointment booking, services, pricing</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🏡</div>
+      <div class="industry-info"><div class="industry-name">Real Estate</div><div class="industry-desc">Lead qualification, showings, property info</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🌊</div>
+      <div class="industry-info"><div class="industry-name">Tour Companies</div><div class="industry-desc">Bookings, availability, pricing, cancellations</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🌿</div>
+      <div class="industry-info"><div class="industry-name">Landscaping</div><div class="industry-desc">Quote requests, scheduling, service areas</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🔨</div>
+      <div class="industry-info"><div class="industry-name">Construction</div><div class="industry-desc">Estimate requests, project inquiries, scheduling</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">☀️</div>
+      <div class="industry-info"><div class="industry-name">Solar Companies</div><div class="industry-desc">Lead capture, consultations, incentive info</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🏖️</div>
+      <div class="industry-info"><div class="industry-name">Vacation Rentals</div><div class="industry-desc">Availability, pricing, booking, house rules</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🚗</div>
+      <div class="industry-info"><div class="industry-name">Auto Services</div><div class="industry-desc">Appointments, services, quotes, wait times</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🏥</div>
+      <div class="industry-info"><div class="industry-name">Medical & Dental</div><div class="industry-desc">Appointments, insurance questions, directions</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">🏋️</div>
+      <div class="industry-info"><div class="industry-name">Gyms & Fitness</div><div class="industry-desc">Memberships, class schedules, pricing, tours</div></div>
+    </div>
+    <div class="industry-card reveal">
+      <div class="industry-emoji">💼</div>
+      <div class="industry-info"><div class="industry-name">Any Local Business</div><div class="industry-desc">If customers call you — we can automate it</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="full-section how-bg" id="how">
+  <div class="full-inner">
+    <div class="section-tag reveal">The Process</div>
+    <h2 class="section-h2 reveal">Up and running<br/>in 48 hours.</h2>
+    <p class="section-sub reveal">No technical knowledge needed. No complicated setup. We handle everything from start to finish.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">We learn your business</div>
+        <div class="step-desc">A quick 30-minute call where you tell us about your business — services, hours, FAQs, your tone. We take notes so your agent sounds exactly like you.</div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">We build your agent</div>
+        <div class="step-desc">We custom-build and train your AI agent on your specific business. We test it thoroughly before it ever touches a real customer call.</div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">You go live</div>
+        <div class="step-desc">We connect it to your phone number. From that moment, every call gets answered instantly — 24 hours a day, 7 days a week, 365 days a year.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-tag reveal">What's Included</div>
+  <h2 class="section-h2 reveal">Everything your business<br/>needs to never miss a call.</h2>
+  <p class="section-sub reveal">Every agent comes fully loaded with features that used to require an entire call center team.</p>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">📞</div>
+      <div class="feature-title">24/7 Call Answering</div>
+      <div class="feature-desc">Your AI agent picks up every single call — during lunch rush, after hours, on holidays, and on weekends. It never calls in sick and never puts someone on hold.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📅</div>
+      <div class="feature-title">Appointment & Reservation Booking</div>
+      <div class="feature-desc">Your agent collects all the information needed to book appointments or reservations and logs them directly to your dashboard in real time.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">👤</div>
+      <div class="feature-title">Lead Capture & Logging</div>
+      <div class="feature-desc">Every caller's name, phone number, and interest is automatically captured and stored. Never lose a potential customer to a missed call again.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔄</div>
+      <div class="feature-title">Human Transfer</div>
+      <div class="feature-desc">When a caller needs a real person, your agent smoothly transfers the call to you or your team — so complex situations always get the human touch they need.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Live Dashboard</div>
+      <div class="feature-desc">See every call, transcript, lead, and reservation in real time on your own branded dashboard. Full visibility into every conversation your agent has.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🌺</div>
+      <div class="feature-title">Custom Voice & Personality</div>
+      <div class="feature-desc">Your agent gets a name, a voice, and a personality that matches your brand. It sounds like your best employee — warm, professional, and always on point.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<div class="full-section problem-bg" id="pricing">
+  <div class="full-inner">
+    <div class="section-tag reveal">Pricing</div>
+    <h2 class="section-h2 reveal">Simple, transparent<br/>pricing.</h2>
+    <p class="section-sub reveal">No hidden fees. No long-term contracts. Cancel anytime. Most clients pay for themselves within the first week.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price"><sup>$</sup>197</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>AI phone agent setup</li>
+          <li>Up to 500 calls/month</li>
+          <li>FAQ & info handling</li>
+          <li>Lead capture & logging</li>
+          <li>Monthly call report</li>
+          <li>Email support</li>
+        </ul>
+        <button class="pricing-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      </div>
+      <div class="pricing-card featured reveal">
+        <div class="pricing-name">Professional</div>
+        <div class="pricing-price"><sup>$</sup>297</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>Everything in Starter</li>
+          <li>Up to 1,500 calls/month</li>
+          <li>Appointment & reservation booking</li>
+          <li>Outbound follow-up calls</li>
+          <li>Live call dashboard</li>
+          <li>Full call transcripts</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="pricing-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      </div>
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price"><sup>$</sup>497</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>Everything in Professional</li>
+          <li>Unlimited calls</li>
+          <li>Multiple locations</li>
+          <li>CRM integration</li>
+          <li>Custom voice & branding</li>
+          <li>Dedicated account manager</li>
+          <li>24/7 phone support</li>
+        </ul>
+        <button class="pricing-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="full-section contact-bg" id="contact">
+  <div class="contact-inner">
+    <div class="section-tag reveal" style="justify-content:center;">Book a Demo</div>
+    <h2 class="section-h2 reveal">Hear it for yourself.<br/><span style="color:var(--teal)">Free. No pressure.</span></h2>
+    <p class="section-sub reveal" style="margin: 0 auto 0;">We'll set up a live demo call customized for your business so you can hear exactly what your customers will experience. Takes 15 minutes.</p>
+    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" placeholder="Your name" required />
+      </div>
+      <div class="form-group">
+        <label>Business Name</label>
+        <input type="text" placeholder="Your business name" required />
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+1 808 555 0100" required />
+      </div>
+      <div class="form-group">
+        <label>Industry</label>
+        <select required>
+          <option value="">Select your industry</option>
+          <option>Restaurant / Cafe</option>
+          <option>Salon / Spa</option>
+          <option>Real Estate</option>
+          <option>Tour Company</option>
+          <option>Landscaping</option>
+          <option>Construction</option>
+          <option>Solar</option>
+          <option>Vacation Rentals</option>
+          <option>Auto Services</option>
+          <option>Medical / Dental</option>
+          <option>Gym / Fitness</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group form-full">
+        <label>What's your biggest challenge with phone calls?</label>
+        <textarea placeholder="e.g. We miss calls when we're on job sites, after hours calls go unanswered..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">🌺 Book My Free Demo — Hear It Live</button>
+    </form>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><div class="logo-dot"></div>AI <span>Concepts</span></div>
+  <div>Kailua-Kona, Hawaii 🌺 — Serving Businesses Across Hawaii</div>
+  <div>© 2026 AI Concepts. All rights reserved.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = "✅ Mahalo! We'll be in touch within 24 hours.";
+    btn.style.background = '#00cec9';
+    btn.style.color = '#000';
+    btn.disabled = true;
+  }
+</script>
+</body>
+</html>
