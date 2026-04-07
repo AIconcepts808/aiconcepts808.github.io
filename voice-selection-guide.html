@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Concepts — Voice Selection Guide</title>
+  <style>
+    :root {
+      --black: #07070f;
+      --deep: #0e0e1c;
+      --orange: #f97316;
+      --orange-dim: rgba(249,115,22,0.10);
+      --orange-border: rgba(249,115,22,0.25);
+      --teal: #06b6d4;
+      --teal-dim: rgba(6,182,212,0.08);
+      --white: #f1f1f5;
+      --off-white: #c8c8d8;
+      --gray: #6b7280;
+      --border: rgba(255,255,255,0.07);
+      --card: rgba(255,255,255,0.03);
+      --panel: #111120;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--black); color: var(--white);
+      min-height: 100vh; padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(7,7,15,0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(16px);
+    }
+    .logo {
+      font-weight: 900; font-size: 18px; letter-spacing: -0.5px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-dot {
+      width: 8px; height: 8px; background: var(--orange); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(249,115,22,0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(249,115,22,0); }
+      100% { box-shadow: 0 0 0 0 rgba(249,115,22,0); }
+    }
+    .logo-accent { color: var(--orange); }
+    .header-sub { font-size: 12px; color: var(--gray); }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* INTRO */
+    .intro {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px; margin-bottom: 32px;
+      border-left: 3px solid var(--orange);
+    }
+    .intro h1 { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .intro p { font-size: 14px; color: var(--off-white); line-height: 1.7; }
+
+    /* FILTERS */
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .filter-btn {
+      padding: 8px 18px; border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--card); color: var(--gray);
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--orange); color: var(--white); }
+    .filter-btn.active { background: var(--orange); color: #000; border-color: var(--orange); font-weight: 700; }
+
+    /* GRID */
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+
+    /* VOICE CARD */
+    .voice-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      cursor: pointer; transition: all 0.25s; position: relative;
+      overflow: hidden;
+    }
+    .voice-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--teal), transparent);
+      transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+    }
+    .voice-card:hover { border-color: rgba(6,182,212,0.3); transform: translateY(-3px); }
+    .voice-card:hover::before { transform: scaleX(1); }
+    .voice-card.selected { border-color: var(--orange); border-width: 2px; }
+    .voice-card.selected::before { background: linear-gradient(90deg, var(--orange), transparent); transform: scaleX(1); }
+
+    .selected-badge {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--orange); color: #000; font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 100px; letter-spacing: 0.05em;
+    }
+
+    .voice-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .voice-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; flex-shrink: 0;
+    }
+    .voice-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .voice-type { font-size: 12px; color: var(--gray); }
+    .voice-desc { font-size: 13px; color: var(--off-white); line-height: 1.75; margin-bottom: 14px; }
+    .best-for { font-size: 11px; color: var(--orange); font-weight: 600; margin-bottom: 10px; letter-spacing: 0.02em; }
+    .voice-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tag {
+      font-size: 11px; padding: 3px 9px; border-radius: 100px;
+      background: var(--card); color: var(--gray);
+      border: 1px solid var(--border);
+    }
+    .voice-id {
+      font-size: 10px; color: var(--gray); font-family: 'SF Mono', 'Fira Code', monospace;
+      background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px;
+      word-break: break-all; line-height: 1.5;
+    }
+    .voice-id strong { color: var(--teal); }
+
+    /* SELECTED PANEL */
+    .selected-panel {
+      background: var(--panel); border: 1px solid var(--orange-border);
+      border-radius: var(--radius); padding: 24px 28px; margin-bottom: 24px;
+      display: none;
+    }
+    .selected-panel.show { display: block; }
+    .selected-panel h3 { font-size: 14px; font-weight: 700; color: var(--orange); margin-bottom: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .selected-panel p { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+    .config-box {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 2;
+    }
+    .config-key { color: var(--orange); }
+    .config-val { color: var(--teal); }
+    .copy-btn {
+      margin-top: 12px; padding: 10px 20px; background: var(--orange);
+      color: #000; border: none; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #fb923c; transform: translateY(-1px); }
+    .copy-btn:active { transform: scale(0.98); }
+
+    /* UPSELL */
+    .upsell {
+      background: var(--teal-dim); border: 1px solid rgba(6,182,212,0.2);
+      border-radius: var(--radius); padding: 24px 28px;
+    }
+    .upsell h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .upsell p { font-size: 13px; color: var(--off-white); line-height: 1.75; margin-bottom: 12px; }
+    .upsell-price {
+      display: inline-block; background: rgba(249,115,22,0.1);
+      border: 1px solid var(--orange-border); color: var(--orange);
+      font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 100px;
+    }
+
+    .none-msg { font-size: 14px; color: var(--gray); text-align: center; padding: 40px 0; grid-column: 1/-1; }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      main { padding: 24px 16px 60px; }
+      .voice-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    AI <span class="logo-accent">Concepts</span>
+  </div>
+  <div class="header-sub">Voice Selection Guide — Client Onboarding</div>
+</header>
+
+<main>
+
+  <div class="intro">
+    <h1>Choose Your AI Agent's Voice 🎙️</h1>
+    <p>Every AI Concepts agent gets a unique voice customized for your brand. Browse the options below, filter by style, and pick the one that feels right for your business. We'll have it set up within 48 hours.</p>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" onclick="filter(this, 'all')">All voices</button>
+    <button class="filter-btn" onclick="filter(this, 'female')">Female</button>
+    <button class="filter-btn" onclick="filter(this, 'male')">Male</button>
+    <button class="filter-btn" onclick="filter(this, 'warm')">Warm & friendly</button>
+    <button class="filter-btn" onclick="filter(this, 'professional')">Professional</button>
+    <button class="filter-btn" onclick="filter(this, 'energetic')">Energetic</button>
+  </div>
+
+  <div class="voice-grid" id="grid"></div>
+
+  <div class="selected-panel" id="selected-panel">
+    <h3>Selected voice</h3>
+    <p>Copy these settings into your Render environment variables.</p>
+    <div class="config-box" id="config-box"></div>
+    <button class="copy-btn" onclick="copyConfig()">Copy Settings</button>
+  </div>
+
+  <div class="upsell">
+    <h3>🎙️ Want to sound exactly like your own receptionist?</h3>
+    <p>With voice cloning we record your real receptionist for just a few minutes and train an AI that sounds exactly like them. Your regular customers will never know the difference — and new customers will feel instantly welcomed by a familiar local voice.</p>
+    <div class="upsell-price">Voice Cloning — $200–$300 one-time setup</div>
+  </div>
+
+</main>
+
+<script>
+const voices = [
+  {
+    id: "EXAVITQu4vr4xnSDxMaL",
+    name: "Bella",
+    gender: "female",
+    initial: "B",
+    avatarBg: "#2d1a08",
+    avatarColor: "#f97316",
+    type: "Female — American",
+    desc: "Warm, soft, and friendly. Feels like talking to a trusted local — never robotic. Great for businesses that want to feel approachable and welcoming to every caller.",
+    tags: ["warm", "friendly", "soft"],
+    bestFor: "Best for: Restaurants, salons, spas, vacation rentals",
+    filters: ["female", "warm"],
+    stability: "0.50",
+    similarity: "0.75"
+  },
+  {
+    id: "21m00Tcm4TlvDq8ikWAM",
+    name: "Rachel",
+    gender: "female",
+    initial: "R",
+    avatarBg: "#062830",
+    avatarColor: "#06b6d4",
+    type: "Female — American",
+    desc: "Bright, upbeat, and energetic. Sounds like your best employee on their best day. Creates instant positive energy and enthusiasm on every call.",
+    tags: ["energetic", "upbeat", "bright"],
+    bestFor: "Best for: Tour companies, gyms, retail, restaurants",
+    filters: ["female", "energetic"],
+    stability: "0.35",
+    similarity: "0.85"
+  },
+  {
+    id: "AZnzlk1XvdvUeBnXmlld",
+    name: "Domi",
+    gender: "female",
+    initial: "D",
+    avatarBg: "#1a0a2e",
+    avatarColor: "#a78bfa",
+    type: "Female — American",
+    desc: "Confident, clear, and professional. Commands attention without being cold. Perfect for businesses that want to project authority and expertise to their clients.",
+    tags: ["confident", "professional", "clear"],
+    bestFor: "Best for: Real estate, solar, medical, law firms",
+    filters: ["female", "professional"],
+    stability: "0.45",
+    similarity: "0.80"
+  },
+  {
+    id: "MF3mGyEYCl7XYWbV9V6O",
+    name: "Elli",
+    gender: "female",
+    initial: "E",
+    avatarBg: "#082012",
+    avatarColor: "#4ade80",
+    type: "Female — American",
+    desc: "Young, casual, and conversational. Sounds like a real person chatting — not a corporate bot. Makes customers feel immediately at ease and comfortable.",
+    tags: ["casual", "young", "conversational"],
+    bestFor: "Best for: Cafes, food trucks, youth-focused brands",
+    filters: ["female", "warm", "energetic"],
+    stability: "0.40",
+    similarity: "0.75"
+  },
+  {
+    id: "TxGEqnHWrfWFTfGW9XjX",
+    name: "Josh",
+    gender: "male",
+    initial: "J",
+    avatarBg: "#071428",
+    avatarColor: "#60a5fa",
+    type: "Male — American",
+    desc: "Deep, smooth, and trustworthy. Sounds like someone who knows what they're talking about. Builds immediate credibility and trust with every caller.",
+    tags: ["deep", "trustworthy", "smooth"],
+    bestFor: "Best for: Construction, auto services, solar, contracting",
+    filters: ["male", "professional"],
+    stability: "0.50",
+    similarity: "0.80"
+  },
+  {
+    id: "VR6AewLTigWG4xSOukaG",
+    name: "Arnold",
+    gender: "male",
+    initial: "A",
+    avatarBg: "#2a0e04",
+    avatarColor: "#fb923c",
+    type: "Male — American",
+    desc: "Strong, clear, and no-nonsense. Gets straight to the point without being abrupt. Customers feel like they're talking to someone capable and completely reliable.",
+    tags: ["strong", "reliable", "clear"],
+    bestFor: "Best for: Landscaping, construction, security, auto",
+    filters: ["male", "professional"],
+    stability: "0.55",
+    similarity: "0.75"
+  },
+  {
+    id: "pNInz4obpRlyKved0kGc",
+    name: "Adam",
+    gender: "male",
+    initial: "A",
+    avatarBg: "#062028",
+    avatarColor: "#22d3ee",
+    type: "Male — American",
+    desc: "Calm, measured, and professional. Never sounds rushed. Perfect for medical or legal settings where patients and clients need to feel fully reassured.",
+    tags: ["calm", "professional", "reassuring"],
+    bestFor: "Best for: Medical offices, dental, legal, financial",
+    filters: ["male", "professional"],
+    stability: "0.60",
+    similarity: "0.85"
+  },
+  {
+    id: "yoZ06aMxZJJ28mfd3POQ",
+    name: "Sam",
+    gender: "male",
+    initial: "S",
+    avatarBg: "#062014",
+    avatarColor: "#34d399",
+    type: "Male — American",
+    desc: "Friendly, approachable, and energetic. Sounds like a helpful local who genuinely wants to assist. Creates a great first impression on every single call.",
+    tags: ["friendly", "energetic", "approachable"],
+    bestFor: "Best for: Tour companies, gyms, retail, restaurants",
+    filters: ["male", "warm", "energetic"],
+    stability: "0.40",
+    similarity: "0.75"
+  }
+];
+
+let selectedId = null;
+let currentFilter = 'all';
+
+function filter(btn, f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function select(id) {
+  selectedId = selectedId === id ? null : id;
+  renderGrid();
+  renderSelected();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const filtered = voices.filter(v => {
+    if (currentFilter === 'all') return true;
+    if (currentFilter === 'female') return v.gender === 'female';
+    if (currentFilter === 'male') return v.gender === 'male';
+    return v.filters.includes(currentFilter);
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="none-msg">No voices match this filter</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(v => `
+    <div class="voice-card ${selectedId === v.id ? 'selected' : ''}" onclick="select('${v.id}')">
+      ${selectedId === v.id ? '<div class="selected-badge">SELECTED</div>' : ''}
+      <div class="voice-top">
+        <div class="voice-avatar" style="background:${v.avatarBg};color:${v.avatarColor}">${v.initial}</div>
+        <div>
+          <div class="voice-name">${v.name}</div>
+          <div class="voice-type">${v.type}</div>
+        </div>
+      </div>
+      <div class="voice-desc">${v.desc}</div>
+      <div class="best-for">${v.bestFor}</div>
+      <div class="voice-tags">${v.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="voice-id"><strong>Voice ID:</strong> ${v.id}</div>
+    </div>
+  `).join('');
+}
+
+function renderSelected() {
+  const panel = document.getElementById('selected-panel');
+  const box = document.getElementById('config-box');
+  if (!selectedId) { panel.classList.remove('show'); return; }
+  const v = voices.find(x => x.id === selectedId);
+  panel.classList.add('show');
+  box.innerHTML = `
+    <div><span class="config-key">ELEVENLABS_VOICE_ID</span>=<span class="config-val">${v.id}</span></div>
+    <div><span class="config-key">ELEVENLABS_STABILITY</span>=<span class="config-val">${v.stability}</span></div>
+    <div><span class="config-key">ELEVENLABS_SIMILARITY</span>=<span class="config-val">${v.similarity}</span></div>
+  `;
+}
+
+function copyConfig() {
+  if (!selectedId) return;
+  const v = voices.find(x => x.id === selectedId);
+  const text = `ELEVENLABS_VOICE_ID=${v.id}\nELEVENLABS_STABILITY=${v.stability}\nELEVENLABS_SIMILARITY=${v.similarity}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Settings', 2000);
+  });
+}
+
+renderGrid();
+</script>
+</body>
+</html>
