@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Concepts — Client Onboarding</title>
+  <style>
+    :root {
+      --black: #07070f;
+      --deep: #0e0e1c;
+      --panel: #111120;
+      --orange: #f97316;
+      --orange-dim: rgba(249,115,22,0.08);
+      --orange-border: rgba(249,115,22,0.25);
+      --teal: #06b6d4;
+      --teal-dim: rgba(6,182,212,0.08);
+      --white: #f1f1f5;
+      --off-white: #c8c8d8;
+      --gray: #6b7280;
+      --border: rgba(255,255,255,0.07);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--black); color: var(--white);
+      min-height: 100vh; padding-bottom: 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(7,7,15,0.95); border-bottom: 1px solid var(--border);
+      padding: 20px 32px; display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(16px);
+    }
+    .logo { font-weight: 900; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+    .logo-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(249,115,22,0.6); } 70% { box-shadow: 0 0 0 8px rgba(249,115,22,0); } 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0); } }
+    .logo-accent { color: var(--orange); }
+    .header-sub { font-size: 12px; color: var(--gray); }
+
+    /* PROGRESS */
+    .progress-bar {
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      padding: 16px 32px; display: flex; align-items: center; gap: 12px;
+    }
+    .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 100px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--orange); border-radius: 100px; transition: width 0.4s ease; }
+    .progress-text { font-size: 12px; color: var(--gray); white-space: nowrap; }
+
+    /* STEPS NAV */
+    .steps-nav {
+      display: flex; gap: 0; padding: 0 32px;
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .steps-nav::-webkit-scrollbar { display: none; }
+    .step-tab {
+      padding: 14px 20px; font-size: 12px; font-weight: 600;
+      color: var(--gray); border-bottom: 2px solid transparent;
+      cursor: pointer; white-space: nowrap; transition: all 0.2s;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .step-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+    .step-tab.done { color: var(--teal); }
+
+    /* MAIN */
+    main { max-width: 720px; margin: 0 auto; padding: 40px 24px; }
+
+    /* SECTION */
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+
+    .section-header { margin-bottom: 32px; }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 8px;
+    }
+    .section-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .section-desc { font-size: 14px; color: var(--off-white); line-height: 1.7; }
+
+    /* FORM ELEMENTS */
+    .form-group { margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+    label {
+      display: block; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 8px;
+    }
+    .label-optional { font-weight: 400; color: var(--gray); text-transform: none; letter-spacing: 0; font-size: 11px; margin-left: 6px; }
+
+    input[type="text"], input[type="tel"], input[type="email"], input[type="time"], select, textarea {
+      width: 100%; background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 13px 16px;
+      color: var(--white); font-family: inherit; font-size: 14px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+    }
+    select option { background: var(--deep); }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    /* HOURS GRID */
+    .hours-grid { display: flex; flex-direction: column; gap: 10px; }
+    .hours-row {
+      display: grid; grid-template-columns: 100px 1fr 1fr 80px;
+      gap: 10px; align-items: center;
+    }
+    .day-label { font-size: 13px; font-weight: 600; color: var(--off-white); }
+    .closed-toggle {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--gray); cursor: pointer;
+    }
+    .closed-toggle input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--orange); }
+
+    /* MENU ITEMS */
+    .menu-section { margin-bottom: 24px; }
+    .menu-category-title {
+      font-size: 13px; font-weight: 700; color: var(--teal);
+      margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .menu-item-row { display: grid; grid-template-columns: 1fr 100px 36px; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .add-btn {
+      background: transparent; border: 1px dashed var(--border); border-radius: var(--radius-sm);
+      color: var(--gray); padding: 10px; font-size: 13px; cursor: pointer;
+      width: 100%; font-family: inherit; transition: all 0.2s; margin-top: 4px;
+    }
+    .add-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .remove-btn {
+      background: transparent; border: none; color: var(--gray);
+      cursor: pointer; font-size: 18px; padding: 4px; transition: color 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .remove-btn:hover { color: var(--orange); }
+
+    /* FAQ ITEMS */
+    .faq-row { display: grid; grid-template-columns: 1fr 36px; gap: 8px; margin-bottom: 8px; align-items: start; }
+
+    /* VOICE CARDS */
+    .voice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+    .voice-opt {
+      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .voice-opt:hover { border-color: rgba(249,115,22,0.3); }
+    .voice-opt.selected { border-color: var(--orange); border-width: 2px; background: var(--orange-dim); }
+    .voice-opt-icon { font-size: 28px; margin-bottom: 8px; }
+    .voice-opt-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .voice-opt-desc { font-size: 11px; color: var(--gray); line-height: 1.5; }
+
+    /* TONE CARDS */
+    .tone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 8px; }
+    .tone-opt {
+      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px 16px; cursor: pointer; transition: all 0.2s;
+    }
+    .tone-opt:hover { border-color: rgba(6,182,212,0.3); }
+    .tone-opt.selected { border-color: var(--teal); border-width: 2px; background: var(--teal-dim); }
+    .tone-opt-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .tone-opt-desc { font-size: 11px; color: var(--gray); }
+
+    /* INFO BOX */
+    .info-box {
+      background: var(--orange-dim); border: 1px solid var(--orange-border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+      font-size: 13px; color: var(--off-white); line-height: 1.7;
+    }
+    .info-box strong { color: var(--orange); }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    /* NAV BUTTONS */
+    .form-nav {
+      display: flex; gap: 12px; justify-content: space-between;
+      margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
+    }
+    .btn-back {
+      background: transparent; border: 1px solid var(--border); color: var(--gray);
+      padding: 13px 28px; border-radius: var(--radius-sm); font-size: 14px;
+      font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .btn-back:hover { border-color: var(--white); color: var(--white); }
+    .btn-next {
+      background: var(--orange); color: #000; border: none;
+      padding: 13px 36px; border-radius: var(--radius-sm); font-size: 14px;
+      font-weight: 800; cursor: pointer; font-family: inherit; transition: all 0.2s;
+      box-shadow: 0 0 32px rgba(249,115,22,0.2);
+    }
+    .btn-next:hover { background: #fb923c; transform: translateY(-1px); }
+
+    /* SUCCESS */
+    .success-screen { display: none; text-align: center; padding: 60px 24px; }
+    .success-screen.show { display: block; }
+    .success-icon { font-size: 72px; margin-bottom: 24px; }
+    .success-title { font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .success-desc { font-size: 15px; color: var(--off-white); line-height: 1.8; max-width: 480px; margin: 0 auto 32px; }
+    .success-box {
+      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; margin: 0 auto; max-width: 520px; text-align: left;
+    }
+    .success-box h3 { font-size: 14px; color: var(--orange); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .success-item { font-size: 13px; color: var(--off-white); padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
+    .success-item:last-child { border-bottom: none; }
+    .success-item span { color: var(--teal); flex-shrink: 0; }
+
+    /* COPY BOX */
+    .copy-area {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 16px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.8;
+      color: var(--off-white); margin-top: 16px; white-space: pre-wrap; word-break: break-all;
+    }
+    .copy-btn-full {
+      width: 100%; margin-top: 12px; padding: 12px; background: var(--teal); color: #000;
+      border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .copy-btn-full:hover { background: #22d3ee; }
+
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      .progress-bar { padding: 12px 20px; }
+      .steps-nav { padding: 0 20px; }
+      main { padding: 24px 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .hours-row { grid-template-columns: 80px 1fr 1fr 70px; gap: 6px; }
+      .menu-item-row { grid-template-columns: 1fr 80px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-dot"></div>AI <span class="logo-accent">Concepts</span></div>
+  <div class="header-sub">Client Onboarding Form</div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="progress" style="width:16.6%"></div></div>
+  <div class="progress-text" id="progress-text">Step 1 of 6</div>
+</div>
+
+<div class="steps-nav">
+  <div class="step-tab active" id="tab-0">Business Info</div>
+  <div class="step-tab" id="tab-1">Hours</div>
+  <div class="step-tab" id="tab-2">Services / Menu</div>
+  <div class="step-tab" id="tab-3">Common Questions</div>
+  <div class="step-tab" id="tab-4">Voice & Personality</div>
+  <div class="step-tab" id="tab-5">Transfer & Final</div>
+</div>
+
+<main>
+
+  <!-- STEP 1 — BUSINESS INFO -->
+  <div class="form-section active" id="step-0">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 1 of 6</div>
+      <div class="section-title">Business Information</div>
+      <div class="section-desc">Basic details about your business so we can set up your AI agent correctly.</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Business Name</label>
+        <input type="text" id="bizName" placeholder="e.g. Kona Grill" />
+      </div>
+      <div class="form-group">
+        <label>Industry / Type</label>
+        <select id="bizType">
+          <option value="">Select type</option>
+          <option>Restaurant / Cafe</option>
+          <option>Salon / Spa</option>
+          <option>Real Estate</option>
+          <option>Tour Company</option>
+          <option>Landscaping</option>
+          <option>Construction</option>
+          <option>Solar</option>
+          <option>Vacation Rental</option>
+          <option>Auto Services</option>
+          <option>Medical / Dental</option>
+          <option>Gym / Fitness</option>
+          <option>Retail Store</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Owner / Contact Name</label>
+        <input type="text" id="ownerName" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label>Contact Phone</label>
+        <input type="tel" id="contactPhone" placeholder="+1 808 555 0100" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Business Address</label>
+      <input type="text" id="bizAddress" placeholder="123 Alii Drive, Kailua-Kona, HI 96740" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Business Phone <span class="label-optional">(public number)</span></label>
+        <input type="tel" id="bizPhone" placeholder="+1 808 555 0100" />
+      </div>
+      <div class="form-group">
+        <label>Website <span class="label-optional">optional</span></label>
+        <input type="text" id="bizWebsite" placeholder="www.yourbusiness.com" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>What should we name your AI agent?</label>
+      <input type="text" id="agentName" placeholder="e.g. Leia, Kai, Malia, Alex..." />
+    </div>
+
+    <div class="form-group">
+      <label>Custom Greeting <span class="label-optional">optional — we'll write one if you leave this blank</span></label>
+      <textarea id="greeting" placeholder="e.g. Aloha! Thanks for calling Kona Grill, this is Leia! How can I help you today?" style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="form-nav">
+      <div></div>
+      <button class="btn-next" onclick="nextStep()">Next — Hours →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 — HOURS -->
+  <div class="form-section" id="step-1">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 2 of 6</div>
+      <div class="section-title">Business Hours</div>
+      <div class="section-desc">Your agent will tell customers exactly when you're open and alert them to any closures.</div>
+    </div>
+
+    <div class="hours-grid" id="hours-grid"></div>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Any special notes about hours? <span class="label-optional">optional</span></label>
+      <textarea id="hoursNotes" placeholder="e.g. Last seating at 8:30pm, kitchen closes at 9pm, closed on major holidays..." style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Next — Services →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — SERVICES/MENU -->
+  <div class="form-section" id="step-2">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 3 of 6</div>
+      <div class="section-title">Services & Menu</div>
+      <div class="section-desc">Tell us what you offer. Your agent will use this to answer customer questions accurately.</div>
+    </div>
+
+    <div class="info-box">
+      <strong>Tip:</strong> Add as much detail as possible. The more your agent knows, the better it answers customer questions. For restaurants add menu items. For service businesses add your services and prices.
+    </div>
+
+    <div id="categories-container">
+      <div class="menu-section" id="cat-0">
+        <div class="form-group">
+          <label>Category Name</label>
+          <input type="text" class="cat-name" placeholder="e.g. Appetizers / Haircuts / Landscaping Services" />
+        </div>
+        <div class="menu-category-title">Items in this category:</div>
+        <div class="items-container"></div>
+        <button class="add-btn" onclick="addItem(this)">+ Add item</button>
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="addCategory()" style="margin-top:16px;">+ Add another category</button>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Pricing notes <span class="label-optional">optional</span></label>
+      <textarea id="pricingNotes" placeholder="e.g. Prices subject to change, market price on fresh fish, gratuity added for parties of 6+..." style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Next — FAQs →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — COMMON QUESTIONS -->
+  <div class="form-section" id="step-3">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 4 of 6</div>
+      <div class="section-title">Common Questions</div>
+      <div class="section-desc">What do customers ask your staff most often? Your agent will know the answers to all of these.</div>
+    </div>
+
+    <div class="info-box">
+      <strong>Think about:</strong> parking, reservations, deposits, cancellations, dress code, kids menu, dietary options, delivery, gift cards, wait times, payment methods, etc.
+    </div>
+
+    <div id="faqs-container"></div>
+    <button class="add-btn" onclick="addFaq()">+ Add a common question</button>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Does your business take reservations or appointments?</label>
+      <select id="takesReservations">
+        <option value="">Select</option>
+        <option>Yes — reservations required</option>
+        <option>Yes — reservations recommended</option>
+        <option>Yes — walk-ins also welcome</option>
+        <option>No — walk-in only</option>
+        <option>Appointments only</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Do you offer to-go or delivery?</label>
+      <select id="takeout">
+        <option value="">Select</option>
+        <option>To-go only</option>
+        <option>Delivery only</option>
+        <option>Both to-go and delivery</option>
+        <option>Dine-in only — no to-go</option>
+        <option>Not applicable</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Payment methods accepted</label>
+      <input type="text" id="payment" placeholder="e.g. Cash, all major credit cards, Venmo, no checks" />
+    </div>
+
+    <div class="form-group">
+      <label>Parking info <span class="label-optional">optional</span></label>
+      <input type="text" id="parking" placeholder="e.g. Free parking in the lot behind the restaurant on Kuakini St" />
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Next — Voice →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 — VOICE & PERSONALITY -->
+  <div class="form-section" id="step-4">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 5 of 6</div>
+      <div class="section-title">Voice & Personality</div>
+      <div class="section-desc">Choose how your AI agent sounds and speaks to your customers.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Voice Gender</label>
+      <div class="voice-grid">
+        <div class="voice-opt" onclick="selectVoice(this, 'female')">
+          <div class="voice-opt-icon">👩</div>
+          <div class="voice-opt-name">Female</div>
+          <div class="voice-opt-desc">Warm, approachable voices</div>
+        </div>
+        <div class="voice-opt" onclick="selectVoice(this, 'male')">
+          <div class="voice-opt-icon">👨</div>
+          <div class="voice-opt-name">Male</div>
+          <div class="voice-opt-desc">Strong, trustworthy voices</div>
+        </div>
+        <div class="voice-opt" onclick="selectVoice(this, 'no preference')">
+          <div class="voice-opt-icon">🎙️</div>
+          <div class="voice-opt-name">No preference</div>
+          <div class="voice-opt-desc">We'll pick the best fit</div>
+        </div>
+      </div>
+      <input type="hidden" id="voiceGender" />
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Agent Personality / Tone</label>
+      <div class="tone-grid">
+        <div class="tone-opt" onclick="selectTone(this, 'Warm & Friendly')">
+          <div class="tone-opt-name">Warm & Friendly</div>
+          <div class="tone-opt-desc">Welcoming, casual, local feel</div>
+        </div>
+        <div class="tone-opt" onclick="selectTone(this, 'Professional')">
+          <div class="tone-opt-name">Professional</div>
+          <div class="tone-opt-desc">Polished, formal, authoritative</div>
+        </div>
+        <div class="tone-opt" onclick="selectTone(this, 'Energetic & Upbeat')">
+          <div class="tone-opt-name">Energetic & Upbeat</div>
+          <div class="tone-opt-desc">Enthusiastic, positive, fun</div>
+        </div>
+        <div class="tone-opt" onclick="selectTone(this, 'Calm & Reassuring')">
+          <div class="tone-opt-name">Calm & Reassuring</div>
+          <div class="tone-opt-desc">Steady, trustworthy, patient</div>
+        </div>
+        <div class="tone-opt" onclick="selectTone(this, 'Casual & Conversational')">
+          <div class="tone-opt-name">Casual</div>
+          <div class="tone-opt-desc">Relaxed, like a friend talking</div>
+        </div>
+        <div class="tone-opt" onclick="selectTone(this, 'Mix — Friendly but Professional')">
+          <div class="tone-opt-name">Mix</div>
+          <div class="tone-opt-desc">Friendly but still professional</div>
+        </div>
+      </div>
+      <input type="hidden" id="agentTone" />
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Any words or phrases to USE? <span class="label-optional">optional</span></label>
+      <input type="text" id="useWords" placeholder="e.g. Aloha, Mahalo, Come visit us soon..." />
+    </div>
+
+    <div class="form-group">
+      <label>Any words or phrases to AVOID? <span class="label-optional">optional</span></label>
+      <input type="text" id="avoidWords" placeholder="e.g. No worries, Absolutely, No problem..." />
+    </div>
+
+    <div class="form-group">
+      <label>Any other personality notes? <span class="label-optional">optional</span></label>
+      <textarea id="personalityNotes" placeholder="e.g. We're a family restaurant so keep it friendly for kids too. Don't be too formal..." style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Next — Final Details →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 — TRANSFER & FINAL -->
+  <div class="form-section" id="step-5">
+    <div class="section-header">
+      <div class="section-eyebrow">Step 6 of 6</div>
+      <div class="section-title">Transfer & Final Details</div>
+      <div class="section-desc">Last step — tell us how to handle calls that need a real person.</div>
+    </div>
+
+    <div class="form-group">
+      <label>Transfer Phone Number</label>
+      <input type="tel" id="transferPhone" placeholder="+1 808 555 0100 — the number calls will be transferred to" />
+    </div>
+
+    <div class="form-group">
+      <label>Who should calls transfer to?</label>
+      <select id="transferWho">
+        <option value="">Select</option>
+        <option>Owner / Manager directly</option>
+        <option>Front desk / Reception</option>
+        <option>Main business line</option>
+        <option>On-call staff member</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>When should the agent always transfer to a human?</label>
+      <textarea id="transferWhen" placeholder="e.g. When customer is upset or complaining, when they ask to speak to a manager, when they have a complaint about an order, for large party reservations over 15 people..." style="min-height:100px;"></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Current Google Business Profile? <span class="label-optional">optional</span></label>
+      <select id="hasGoogle">
+        <option value="">Select</option>
+        <option>Yes — fully set up</option>
+        <option>Yes — but needs work</option>
+        <option>No — need to set one up</option>
+        <option>Not sure</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Anything else we should know? <span class="label-optional">optional</span></label>
+      <textarea id="anythingElse" placeholder="Special instructions, seasonal menu changes, upcoming events, promotions running, anything that will help us set up your agent perfectly..." style="min-height:100px;"></textarea>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="submitForm()" style="background:#06b6d4;">🌺 Submit & Generate Config</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="success">
+    <div class="success-icon">🌺</div>
+    <div class="success-title">Mahalo! We're on it.</div>
+    <div class="success-desc">Your information has been collected. We'll have your AI agent built and ready within 48 hours. Here's your agent configuration summary:</div>
+
+    <div class="success-box">
+      <h3>Agent Config Summary</h3>
+      <div id="summary-content"></div>
+    </div>
+
+    <div class="success-box" style="margin-top:16px;">
+      <h3>Config for Render</h3>
+      <div class="copy-area" id="config-output"></div>
+      <button class="copy-btn-full" onclick="copyConfig()">Copy Config to Clipboard</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+let currentStep = 0;
+const totalSteps = 6;
+
+const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+// Build hours grid
+function buildHours() {
+  const grid = document.getElementById('hours-grid');
+  grid.innerHTML = days.map((day, i) => `
+    <div class="hours-row" id="hour-row-${i}">
+      <div class="day-label">${day}</div>
+      <input type="time" class="hour-open" value="11:00" />
+      <input type="time" class="hour-close" value="21:00" />
+      <label class="closed-toggle">
+        <input type="checkbox" class="hour-closed" onchange="toggleClosed(${i})" />
+        Closed
+      </label>
+    </div>
+  `).join('');
+}
+buildHours();
+
+function toggleClosed(i) {
+  const row = document.getElementById(`hour-row-${i}`);
+  const closed = row.querySelector('.hour-closed').checked;
+  row.querySelector('.hour-open').disabled = closed;
+  row.querySelector('.hour-close').disabled = closed;
+  row.querySelector('.hour-open').style.opacity = closed ? '0.3' : '1';
+  row.querySelector('.hour-close').style.opacity = closed ? '0.3' : '1';
+}
+
+// Add initial FAQs
+function addFaq() {
+  const c = document.getElementById('faqs-container');
+  const div = document.createElement('div');
+  div.className = 'faq-row';
+  div.innerHTML = `
+    <div>
+      <input type="text" placeholder="Question: e.g. Do you have parking?" style="margin-bottom:6px;" />
+      <textarea placeholder="Answer: e.g. Yes! Free parking is available behind the building on Kuakini St." style="min-height:70px;"></textarea>
+    </div>
+    <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+  `;
+  c.appendChild(div);
+}
+// Add 3 default FAQs
+addFaq(); addFaq(); addFaq();
+
+// Menu
+function addItem(btn) {
+  const container = btn.previousElementSibling;
+  const row = document.createElement('div');
+  row.className = 'menu-item-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Item name" />
+    <input type="text" placeholder="$0.00" />
+    <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function addCategory() {
+  const c = document.getElementById('categories-container');
+  const idx = c.children.length;
+  const div = document.createElement('div');
+  div.className = 'menu-section';
+  div.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <div class="form-group" style="flex:1;margin:0;">
+        <label>Category Name</label>
+        <input type="text" class="cat-name" placeholder="e.g. Mains / Services / Packages" />
+      </div>
+      <button class="remove-btn" onclick="this.closest('.menu-section').remove()" style="margin-top:24px;">✕</button>
+    </div>
+    <div class="menu-category-title">Items:</div>
+    <div class="items-container"></div>
+    <button class="add-btn" onclick="addItem(this)">+ Add item</button>
+  `;
+  c.appendChild(div);
+}
+// Add initial item to first category
+document.querySelector('.items-container').innerHTML = `
+  <div class="menu-item-row">
+    <input type="text" placeholder="Item name" />
+    <input type="text" placeholder="$0.00" />
+    <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+  </div>
+`;
+
+// Voice & Tone selection
+function selectVoice(el, val) {
+  document.querySelectorAll('.voice-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('voiceGender').value = val;
+}
+
+function selectTone(el, val) {
+  document.querySelectorAll('.tone-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('agentTone').value = val;
+}
+
+// Navigation
+function nextStep() {
+  if (currentStep < totalSteps - 1) {
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    document.getElementById(`tab-${currentStep}`).classList.remove('active');
+    document.getElementById(`tab-${currentStep}`).classList.add('done');
+    currentStep++;
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`tab-${currentStep}`).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    document.getElementById(`tab-${currentStep}`).classList.remove('active');
+    currentStep--;
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`tab-${currentStep}`).classList.remove('done');
+    document.getElementById(`tab-${currentStep}`).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+function updateProgress() {
+  const pct = ((currentStep + 1) / totalSteps) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Step ${currentStep + 1} of ${totalSteps}`;
+}
+
+// Collect hours
+function getHours() {
+  const hours = {};
+  days.forEach((day, i) => {
+    const row = document.getElementById(`hour-row-${i}`);
+    const closed = row.querySelector('.hour-closed').checked;
+    if (closed) {
+      hours[day.toLowerCase()] = 'Closed';
+    } else {
+      const open = row.querySelector('.hour-open').value;
+      const close = row.querySelector('.hour-close').value;
+      hours[day.toLowerCase()] = `${open} - ${close}`;
+    }
+  });
+  return hours;
+}
+
+// Collect menu
+function getMenu() {
+  const menu = [];
+  document.querySelectorAll('.menu-section').forEach(section => {
+    const catName = section.querySelector('.cat-name')?.value || 'Services';
+    const items = [];
+    section.querySelectorAll('.menu-item-row').forEach(row => {
+      const inputs = row.querySelectorAll('input[type="text"]');
+      const name = inputs[0]?.value;
+      const price = inputs[1]?.value;
+      if (name) items.push(price ? `${name} — ${price}` : name);
+    });
+    if (items.length) menu.push({ category: catName, items });
+  });
+  return menu;
+}
+
+// Collect FAQs
+function getFaqs() {
+  const faqs = [];
+  document.querySelectorAll('.faq-row').forEach(row => {
+    const q = row.querySelector('input[type="text"]')?.value;
+    const a = row.querySelector('textarea')?.value;
+    if (q && a) faqs.push({ q, a });
+  });
+  return faqs;
+}
+
+// Submit
+function submitForm() {
+  const data = {
+    bizName: document.getElementById('bizName').value || 'Your Business',
+    bizType: document.getElementById('bizType').value,
+    ownerName: document.getElementById('ownerName').value,
+    contactPhone: document.getElementById('contactPhone').value,
+    bizAddress: document.getElementById('bizAddress').value,
+    bizPhone: document.getElementById('bizPhone').value,
+    bizWebsite: document.getElementById('bizWebsite').value,
+    agentName: document.getElementById('agentName').value || 'Leia',
+    greeting: document.getElementById('greeting').value,
+    hours: getHours(),
+    hoursNotes: document.getElementById('hoursNotes').value,
+    menu: getMenu(),
+    pricingNotes: document.getElementById('pricingNotes').value,
+    faqs: getFaqs(),
+    takesReservations: document.getElementById('takesReservations').value,
+    takeout: document.getElementById('takeout').value,
+    payment: document.getElementById('payment').value,
+    parking: document.getElementById('parking').value,
+    voiceGender: document.getElementById('voiceGender').value || 'female',
+    agentTone: document.getElementById('agentTone').value || 'Warm & Friendly',
+    useWords: document.getElementById('useWords').value,
+    avoidWords: document.getElementById('avoidWords').value,
+    personalityNotes: document.getElementById('personalityNotes').value,
+    transferPhone: document.getElementById('transferPhone').value,
+    transferWho: document.getElementById('transferWho').value,
+    transferWhen: document.getElementById('transferWhen').value,
+    hasGoogle: document.getElementById('hasGoogle').value,
+    anythingElse: document.getElementById('anythingElse').value,
+  };
+
+  // Hide form show success
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('success').classList.add('show');
+
+  // Summary
+  const summary = document.getElementById('summary-content');
+  const items = [
+    ['Business', data.bizName],
+    ['Type', data.bizType],
+    ['Agent Name', data.agentName],
+    ['Voice', data.voiceGender],
+    ['Tone', data.agentTone],
+    ['Transfer To', data.transferPhone || 'Not set'],
+    ['Reservations', data.takesReservations || 'Not set'],
+    ['To-Go', data.takeout || 'Not set'],
+    ['Google Profile', data.hasGoogle || 'Not set'],
+  ];
+  summary.innerHTML = items.map(([k,v]) => `
+    <div class="success-item"><span>→</span><strong style="color:var(--off-white);margin-right:8px;">${k}:</strong>${v}</div>
+  `).join('');
+
+  // Generate config
+  const menuText = data.menu.map(c => `${c.category}: ${c.items.join(', ')}`).join('. ');
+  const hoursText = Object.entries(data.hours).map(([d,h]) => `${d}: ${h}`).join(', ');
+  const faqText = data.faqs.map(f => `Q: ${f.q} A: ${f.a}`).join(' | ');
+
+  const systemPrompt = `You are ${data.agentName}, a ${data.agentTone.toLowerCase()} AI assistant for ${data.bizName}${data.bizType ? ` (${data.bizType})` : ''} located at ${data.bizAddress || 'our location'}.
+
+You help customers with:
+- Menu/service questions and recommendations
+- ${data.takesReservations !== 'No — walk-in only' ? 'Making reservations or appointments (collect: name, date, time, party size, phone number)' : 'General inquiries — walk-in only, no reservations'}
+- ${data.takeout && data.takeout !== 'Dine-in only — no to-go' ? 'To-go orders (collect items, give 20-25 min estimate, customer pays at pickup)' : 'General inquiries'}
+- Hours, location, parking, and general questions
+- Payment info: ${data.payment || 'cash and major credit cards'}
+- Parking: ${data.parking || 'available nearby'}
+- Transferring to staff when needed
+
+${faqText ? `Common Q&A: ${faqText}` : ''}
+${data.useWords ? `Always use these words/phrases: ${data.useWords}` : ''}
+${data.avoidWords ? `Never say: ${data.avoidWords}` : ''}
+${data.personalityNotes ? `Additional notes: ${data.personalityNotes}` : ''}
+${data.transferWhen ? `Always transfer to staff when: ${data.transferWhen}` : ''}
+
+Keep responses concise and natural for a phone conversation. Never use bullet points, markdown, or special characters. Speak naturally as if talking on the phone.`;
+
+  const config = `// config/restaurant.js for ${data.bizName}
+name: "${data.bizName}",
+agentName: "${data.agentName}",
+greeting: "${data.greeting || `Aloha! Thanks for calling ${data.bizName}, this is ${data.agentName}! How can I help you today?`}",
+address: "${data.bizAddress}",
+phone: "${data.bizPhone}",
+transferPhone: "${data.transferPhone}",
+hours: {
+${Object.entries(data.hours).map(([d,h]) => `  ${d}: "${h}"`).join(',\n')}
+},
+menu: [
+${data.menu.map(c => `  { category: "${c.category}", items: [${c.items.map(i => `"${i}"`).join(', ')}] }`).join(',\n')}
+],
+systemPrompt: \`${systemPrompt}\``;
+
+  document.getElementById('config-output').textContent = config;
+  window.scrollTo(0, 0);
+}
+
+function copyConfig() {
+  const text = document.getElementById('config-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn-full');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = 'Copy Config to Clipboard', 2000);
+  });
+}
+</script>
+</body>
+</html>
