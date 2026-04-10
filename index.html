@@ -984,11 +984,16 @@
   function handleSubmit(e) {
   e.preventDefault();
   const form = e.target;
-  const data = {
-    name: form.querySelector('input[type="text"]').value,
-    phone: form.querySelector('input[type="tel"]').value,
-    industry: form.querySelector('select').value,
-  };
+ const inputs = form.querySelectorAll('input[type="text"]');
+const selects = form.querySelectorAll('select');
+const data = {
+    name: inputs[0]?.value || '',
+    business: inputs[1]?.value || '',
+    phone: form.querySelector('input[type="tel"]')?.value || '',
+    industry: selects[0]?.value || '',
+    service_interest: selects[1]?.value || '',
+    message: form.querySelector('textarea')?.value || '',
+};
   fetch('https://formspree.io/f/mojpowej', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
