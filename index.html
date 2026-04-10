@@ -982,13 +982,24 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    btn.textContent = "✅ Mahalo! We'll be in touch within 24 hours.";
-    btn.style.background = '#06b6d4';
-    btn.style.color = '#000';
-    btn.disabled = true;
-  }
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.querySelector('input[type="text"]').value,
+    phone: form.querySelector('input[type="tel"]').value,
+    industry: form.querySelector('select').value,
+  };
+  fetch('https://formspree.io/f/mojpowej', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const btn = form.querySelector('.form-submit');
+  btn.textContent = "✅ Mahalo! We'll be in touch within 24 hours.";
+  btn.style.background = '#06b6d4';
+  btn.style.color = '#000';
+  btn.disabled = true;
+}
 </script>
 </body>
 </html>
